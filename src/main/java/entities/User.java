@@ -36,6 +36,12 @@ public class User implements Serializable {
   @ManyToMany
   private List<Role> roleList = new ArrayList<>();
 
+  @Column(name = "score")
+  private Long score = 0L;
+
+  @Column(name = "high_score")
+  private Long highscore = 0L;
+
   public List<String> getRolesAsStrings() {
     if (roleList.isEmpty()) {
       return null;
@@ -48,6 +54,10 @@ public class User implements Serializable {
   }
 
   public User() {}
+
+  public User(String userName) {
+    this.userName = userName;
+  }
 
   //TODO Change when password is hashed
    public boolean verifyPassword(String pw){return(BCrypt.checkpw(pw, userPass));}
@@ -86,4 +96,19 @@ public class User implements Serializable {
     roleList.add(userRole);
   }
 
+  public Long getScore() {
+    return score;
+  }
+
+  public void setScore(Long score) {
+    this.score = score;
+  }
+
+  public Long getHighscore() {
+    return highscore;
+  }
+
+  public void setHighscore(Long highscore) {
+    this.highscore = highscore;
+  }
 }
