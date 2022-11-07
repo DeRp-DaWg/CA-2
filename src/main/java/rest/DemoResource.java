@@ -82,36 +82,7 @@ public class DemoResource {
         return "{\"msg\": \"Hello to (admin) User: " + thisuser + "\"}";
     }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response createUser(String jsonString) throws API_Exception {
-        String username;
-        String password;
-        try {
-            JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
-            username = json.get("username").getAsString();
-            password = json.get("password").getAsString();
-        } catch (Exception e) {
-            throw new API_Exception("Malformed JSON Suplied",400,e);
-        }
-        return Response.ok().entity(USER_FACADE.createUser(username, password)).build();
 
-//        try {
-//            User user = USER_FACADE.getVeryfiedUser(username, password);
-//            String token = createToken(username, user.getRolesAsStrings());
-//            JsonObject responseJson = new JsonObject();
-//            responseJson.addProperty("username", username);
-//            responseJson.addProperty("token", token);
-//            return Response.ok(new Gson().toJson(responseJson)).build();
-//
-//        } catch (JOSEException | AuthenticationException ex) {
-//            if (ex instanceof AuthenticationException) {
-//                throw (AuthenticationException) ex;
-//            }
-//            Logger.getLogger(GenericExceptionMapper.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-    }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)

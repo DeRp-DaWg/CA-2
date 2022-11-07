@@ -7,8 +7,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
+import errorhandling.UserAlreadyExistsException;
 import security.errorhandling.AuthenticationException;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +52,7 @@ public class UserFacade {
         return user;
     }
 
-    public UserDTO createUser(String username, String password) {
+    public UserDTO createUser(String username, String password) throws UserAlreadyExistsException {
         User user = new User(username, password);
         EntityManager em = emf.createEntityManager();
         try {
@@ -59,6 +61,8 @@ public class UserFacade {
             user.addRole(role);
             em.persist(user);
             em.getTransaction().commit();
+        } catch (Exception e) {
+            throw new UserAlreadyExistsException();
         } finally {
             em.close();
         }

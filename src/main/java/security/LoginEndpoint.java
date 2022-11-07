@@ -10,7 +10,11 @@ import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import dtos.UserDTO;
+import errorhandling.UserAlreadyExistsException;
 import facades.UserFacade;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -28,7 +32,7 @@ import errorhandling.GenericExceptionMapper;
 import javax.persistence.EntityManagerFactory;
 import utils.EMF_Creator;
 
-@Path("login")
+@Path("user")
 public class LoginEndpoint {
 
     public static final int TOKEN_EXPIRE_TIME = 1000 * 60 * 30; //30 min
@@ -36,6 +40,7 @@ public class LoginEndpoint {
     public static final UserFacade USER_FACADE = UserFacade.getUserFacade(EMF);
 
     @POST
+    @Path("login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(String jsonString) throws AuthenticationException, API_Exception {
@@ -54,6 +59,8 @@ public class LoginEndpoint {
             String token = createToken(username, user.getRolesAsStrings());
             JsonObject responseJson = new JsonObject();
             responseJson.addProperty("username", username);
+            responseJson.addProperty("score", user.getScore());
+            responseJson.addProperty("highscore", user.getHighscore());
             responseJson.addProperty("token", token);
             return Response.ok(new Gson().toJson(responseJson)).build();
 
@@ -90,5 +97,26 @@ public class LoginEndpoint {
         signedJWT.sign(signer);
         return signedJWT.serialize();
 
+    }
+
+    @POST
+    @Path("create")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createUser(String jsonString) throws API_Exception {
+        String username;
+        String password;
+        UserDTO userDTO;
+        try {
+            JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
+            username = json.get("username").getAsString();
+            password = json.get("password").getAsString();
+            userDTO = USER_FACADE.createUser(username, password);
+        } catch (UserAlreadyExistsException e) {
+            throw new API_Exception("Username already in use", 409, e);
+        } catch (Exception e) {
+            throw new API_Exception("Malformed JSON Suplied", 400, e);
+        }
+        return Response.ok().entity(userDTO).build();
     }
 }
