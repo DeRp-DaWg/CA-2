@@ -1,60 +1,16 @@
+README will be changed into a proper "how-to"/explanation of the program/api, at some undefined time, for now, a short explanation of the program (to come):
 
-*This project is meant as start code for projects and exercises given in Flow-1+2 (+3 using the security-branch) at http://cphbusiness.dk in the Study Program "AP degree in Computer Science"*
+(On the front end) The user will be presented with a few (2-4) different sort of jokes (per example: dad jokes, political jokes, fart jokes etc.) without knowing which is which, the user is presented with a question, "which is the dad joke" and has to pick out the joke, they believe to be the dad joke.
 
-*Projects which are expected to use this start-code are projects that require all, or most of the following technologies:*
- - *JPA and REST*
-- *Testing, including database test*
-- *Testing, including tests of REST-API's*
-- *CI and CONTINUOUS DELIVERY*
+If the user is correct, they score a point, and is sent on to the next question, with new brand new jokes to boot, reusing is nice, but we ain't about that, in this case. But when the user answers incorrectly they will LOSE, and their score will be set to 0! The worst fate ever bestowed onto a single human ever! And if their score, at the time they lost, was higher than any of their previous scores, they will have set a new highscore, which is a nice little compensation, for getting the worst fate ever bestowed upon you.
 
-## Flow 2 week 1
+If the user wants to, they can also go to the leaderboards/scoreboards/whatever-you-want-to-call-them-boards and see the top X players scores (X because you can set the amount yourself, from the frontend, so perhaps top 10 or top 100 or whatever your heart desires). As you might have already guessed, this leaderboard (we will go with this term for now) will contain the top X users that has gotten the best scores, to entice the user into spending a ridiculous amount of time into OUR program, to beat these scores, and when enough users do this, we will go for WORLD DOMINATION! But one quiz program at a time.
 
-### Preconditions
-*In order to use this code, you should have a local developer setup + a "matching" droplet on Digital Ocean as described in the 3. semester guidelines* 
+As a side note: Being presented with 2-4 jokes at a time, one could say, that this is the most fun quiz program and project ever developed, I'm not saying it, but some one might.
 
-### Getting Started
+Here is a few REST endpoints, that is to be used for the program, for the curious:
 
-This document explains how to use this code (build, test and deploy), locally with maven, and remotely with maven controlled by Github actions
- - [How to use](https://docs.google.com/document/d/1rymrRWF3VVR7ujo3k3sSGD_27q73meGeiMYtmUtYt6c/edit?usp=sharing)
-
-### JPA snippets
-
-### Setup in Intellij
-- open view->too windows->persistence
-- open the Database tab and create a new data source (remember to point to a database event though this is already written in the persistence unit. This is necessary in order to use the JPQL console)
-- in the persistence window right click the pu or an entity and choose "console"
-- write a jpql query in the console and execute it.
-### In netbeans it is much simpler
-- just right click the pu and choose: "Run JPQL query"
-
-### Create model in workbench (cannot be done from Intellij - No model designer yet)
-- file-> new model
-- dobbelclick the mydb icon and change to relevant database (create one first if needed)
-- click the Add Diagram icon
-- click the table icon in the left side panel and click in the squared area to insert new table
-- dobbelclick the new table and change name and add columns (remember to add a check mark in 'ai' for the primary key)
-- do the process again to add a second table
-- now in the panel choose the 'non identifying relationship' on to many
-- click first on the child table (the one that should hold the foreign key) and then on the parent. A new relationship was now added.
-- When done with designing - goto top menu: Database->forward engineer.
-  - Check that all settings looks right and click continue
-  - click continue again (no changes needed here)
-  - Make sure the 'Export mysql table objects' is checked and Show filter to make sure that all your tables are in the 'objects to process' window -> click continue
-  - Verify that the generated script looks right -> click continue
-  - click close and open the database to see the new tables, that was just created.
-
-### create entities from database in Intellij (Persistence mappings)
-- From inside the Persistence window:
-- Right-click a persistence unit, point to Generate Persistence Mapping and select By Database Schema.
-- Select the 
-  - data source 
-  - package
-  - tick tables to include
-  - open tables to see columns and add the ones with mapped type: Collection<SomeEntity> and SomeEntity
-  - click OK.
-
-### In netbeans it is much easier
-- Right click project name -> new -> persistence -> Entity classes From Database -> choose database connection from list -> add the tables you need -> Finish
-
-
-
+1) http://onebrightcreation.com:8081/CA-2/api/jokes (get a few jokes, in a single api call)
+2) http://onebrightcreation.com:8081/CA-2/api/info/highscores (gets the top X players, with the highest scores, for the leaderboards)
+3) http://onebrightcreation.com:8081/CA-2/api/info (with a PUT request, to update the current user score. A boolean 'isCorrect' is send with it, if it's 'true' the score should increment, if it's 'false' the user has answered incorrect, and the score should reset (to 0))
+ttp://onebrightcreation.com:8081/CA-2/api/user/create (makes a user, using a POST request, a 'username' and a 'password', quite simple)
